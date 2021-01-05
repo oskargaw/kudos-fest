@@ -65,7 +65,11 @@ export const resolvers: IResolvers = {
         token,
       };
     },
-    giveKudos: async (_, { body, forWhom }) => {
+    giveKudos: async (_, { body, forWhom }, context) => {
+      // get logged user id
+      // TODO: uncomment when we'll set user's token in local storage on the client side
+      // const user = checkAuth(context);
+
       const user = await User.findOne({ email: "oskar.gawlak@gmail.com" });
 
       if (body.trim() === "") {
