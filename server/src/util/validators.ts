@@ -40,3 +40,27 @@ export const validateRegisterInput = ({
     valid: Object.keys(errors).length < 1,
   };
 };
+
+interface LoginInputValidationProps {
+  email: string;
+  password: string;
+}
+
+export const validateLoginInput = ({
+  email,
+  password,
+}: LoginInputValidationProps) => {
+  let errors = {};
+
+  if (email.trim() === "") {
+    errors = { ...errors, email: "Email must not be empty" };
+  }
+  if (password === "") {
+    errors = { ...errors, password: "Password must not be empty" };
+  }
+
+  return {
+    errors,
+    valid: Object.keys(errors).length < 1,
+  };
+};

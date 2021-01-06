@@ -16,11 +16,16 @@ export const typeDefs = gql`
     password: String!
     confirmPassword: String!
   }
+  input LoginInput {
+    email: String!
+    password: String!
+  }
   type Query {
     currentUser: User!
   }
   type Mutation {
     register(registerInput: RegisterInput): User!
+    login(loginInput: LoginInput): User!
     giveKudos(body: String!, forWhom: String!): Kudos!
   }
 `;
