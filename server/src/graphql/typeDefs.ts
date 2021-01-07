@@ -7,6 +7,11 @@ export const typeDefs = gql`
     fromWhom: String!
     forWhom: String!
   }
+  type TeamMember {
+    id: ID!
+    fullName: String!
+    imageUrl: String!
+  }
   type User {
     id: ID!
     token: String!
@@ -21,13 +26,14 @@ export const typeDefs = gql`
     password: String!
   }
   type Query {
-    currentUser: User!
     getAllKudoses: [Kudos]
+    getTeamMembers: [TeamMember]
   }
   type Mutation {
     register(registerInput: RegisterInput): User!
     login(loginInput: LoginInput): User!
     giveKudos(body: String!, forWhom: String!): Kudos!
     deleteKudos(kudosId: ID!): String!
+    createTeamMember(fullName: String!, imageUrl: String!): TeamMember!
   }
 `;
