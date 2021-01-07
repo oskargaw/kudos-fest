@@ -1,4 +1,4 @@
-import { UserInputError } from "apollo-server-express";
+import { UserInputError, AuthenticationError } from "apollo-server-express";
 import { IResolvers } from "graphql-tools";
 import * as bcrypt from "bcryptjs";
 import * as jwt from "jsonwebtoken";
@@ -122,6 +122,27 @@ export const resolvers: IResolvers = {
       const kudos = await newKudos.save();
 
       return kudos;
+    },
+    deleteKudos: async (_, { kudosId }, context) => {
+      // TODO: uncomment when we'll set user's token in local storage on the client side
+      // const user = checkAuth(context);
+
+      try {
+        const kudos = await Kudos.findById(kudosId);
+
+        if (!kudos) {
+          throw new Error("Kudos does not exist");
+        }
+        // TODO: uncomment when we'll set user's token in local storage on the client side and when we add username to User
+        // if (user.username === kudos.fromWhom) {
+        kudos && (await kudos.delete()); // this condition is to be removed once the above gets uncommented
+        return "Kudos deleted :(";
+      } catch (err) {
+        throw new Error(err);
+      }
+      // } else {
+      //   throw new AuthenticationError("Action not allowed");
+      // }
     },
   },
 };
