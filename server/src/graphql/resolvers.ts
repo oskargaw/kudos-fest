@@ -6,6 +6,7 @@ import * as jwt from "jsonwebtoken";
 import { validateRegisterInput } from "../util/validators";
 import { config } from "../config";
 import { User } from "../models/User";
+import { Kudos } from "../models/Kudos";
 
 const generateToken = (user: any) => {
   return jwt.sign(
@@ -63,6 +64,24 @@ export const resolvers: IResolvers = {
         id: result._id,
         token,
       };
+    },
+    giveKudos: async (_, { body, forWhom }) => {
+      const user = await User.findOne({ email: "oskar.gawlak@gmail.com" });
+
+      if (body.trim() === "") {
+        throw new Error("Kudos body must not be empty");
+      }
+
+      const newKudos = new Kudos({
+        body,
+        fromWhom: user?.id,
+        forWhom,
+        createdAt: new Date().toISOString(),
+      });
+
+      const kudos = await newKudos.save();
+
+      return kudos;
     },
   },
 };
