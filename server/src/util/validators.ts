@@ -4,6 +4,11 @@ interface RegisterInputValidationProps {
   confirmPassword: string;
 }
 
+interface LoginInputValidationProps {
+  email: string;
+  password: string;
+}
+
 export const validateRegisterInput = ({
   email,
   password,
@@ -33,6 +38,25 @@ export const validateRegisterInput = ({
       ...errors,
       confirmPassword: "Passwords must match",
     };
+  }
+
+  return {
+    errors,
+    valid: Object.keys(errors).length < 1,
+  };
+};
+
+export const validateLoginInput = ({
+  email,
+  password,
+}: LoginInputValidationProps) => {
+  let errors = {};
+
+  if (email.trim() === "") {
+    errors = { ...errors, email: "Email must not be empty" };
+  }
+  if (password === "") {
+    errors = { ...errors, password: "Password must not be empty" };
   }
 
   return {

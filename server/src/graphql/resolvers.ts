@@ -3,7 +3,7 @@ import { IResolvers } from "graphql-tools";
 import * as bcrypt from "bcryptjs";
 import * as jwt from "jsonwebtoken";
 
-import { validateRegisterInput } from "../util/validators";
+import { validateRegisterInput, validateLoginInput } from "../util/validators";
 import { config } from "../config";
 import { User } from "../models/User";
 import { Kudos } from "../models/Kudos";
@@ -21,6 +21,42 @@ const generateToken = (user: any) => {
 
 export const resolvers: IResolvers = {
   Mutation: {
+    login: async (_, { loginInput: { email, password } }) => {
+      // validate user's data
+      const { errors, valid } = validateLoginInput({ email, password });
+
+      if (!valid) {
+        throw new UserInputError("Errors", { errors });
+      }
+
+      const user = await User.findOne({ email });
+
+      if (!user) {
+        throw new UserInputError("User not found", {
+          errors: {
+            general: "User not found",
+          },
+        });
+      }
+
+      //compare passwords and create auth token
+      const match = await bcrypt.compare(password, user.password);
+
+      if (!match) {
+        throw new UserInputError("Invalid password", {
+          errors: {
+            general: "Invalid password",
+          },
+        });
+      }
+
+      const token = generateToken(user);
+
+      return {
+        id: user._id,
+        token,
+      };
+    },
     register: async (
       _,
       { registerInput: { email, password, confirmPassword } }
