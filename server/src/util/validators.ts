@@ -4,6 +4,11 @@ interface RegisterInputValidationProps {
   confirmPassword: string;
 }
 
+interface LoginInputValidationProps {
+  email: string;
+  password: string;
+}
+
 export const validateRegisterInput = ({
   email,
   password,
@@ -40,11 +45,6 @@ export const validateRegisterInput = ({
     valid: Object.keys(errors).length < 1,
   };
 };
-
-interface LoginInputValidationProps {
-  email: string;
-  password: string;
-}
 
 export const validateLoginInput = ({
   email,
