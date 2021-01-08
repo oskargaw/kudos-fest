@@ -40,6 +40,19 @@ export const resolvers: IResolvers = {
         throw new Error(err);
       }
     },
+    getKudos: async (_, { kudosId }) => {
+      try {
+        const kudos = await Kudos.findById(kudosId);
+
+        if (kudos) {
+          return kudos;
+        } else {
+          throw new Error("Kudos not found");
+        }
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
   },
   Mutation: {
     login: async (_, { loginInput: { email, password } }) => {
