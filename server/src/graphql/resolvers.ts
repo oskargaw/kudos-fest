@@ -20,6 +20,16 @@ const generateToken = (user: any) => {
 };
 
 export const resolvers: IResolvers = {
+  Query: {
+    getAllKudos: async () => {
+      try {
+        const allKudos = await Kudos.find();
+        return allKudos;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+  },
   Mutation: {
     login: async (_, { loginInput: { email, password } }) => {
       // validate user's data
