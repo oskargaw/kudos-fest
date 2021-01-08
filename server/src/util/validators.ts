@@ -1,4 +1,5 @@
 interface RegisterInputValidationProps {
+  fullName: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -10,11 +11,19 @@ interface LoginInputValidationProps {
 }
 
 export const validateRegisterInput = ({
+  fullName,
   email,
   password,
   confirmPassword,
 }: RegisterInputValidationProps) => {
   let errors = {};
+
+  // "choose your name" will be a default value in the dropdown
+  const chooseFullNameMessage = "Choose your name";
+
+  if (fullName === chooseFullNameMessage) {
+    errors = { ...errors, fullName: "You need to choose your name" };
+  }
 
   if (email.trim() === "") {
     errors = { ...errors, email: "Email must not be empty" };

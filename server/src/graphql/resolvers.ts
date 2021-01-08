@@ -93,10 +93,11 @@ export const resolvers: IResolvers = {
     },
     register: async (
       _,
-      { registerInput: { email, password, confirmPassword } }
+      { registerInput: { fullName, email, password, confirmPassword } }
     ) => {
       // validate user's data
       const { errors, valid } = validateRegisterInput({
+        fullName,
         email,
         password,
         confirmPassword,
@@ -121,6 +122,7 @@ export const resolvers: IResolvers = {
       password = await bcrypt.hash(password, 12);
 
       const newUser = new User({
+        fullName,
         email,
         password,
         createdAt: new Date().toISOString(),

@@ -18,6 +18,7 @@ export const typeDefs = gql`
     token: String!
   }
   input RegisterInput {
+    fullName: String!
     email: String!
     password: String!
     confirmPassword: String!
