@@ -31,7 +31,7 @@ export const resolvers: IResolvers = {
         throw new Error(err);
       }
     },
-    getTeamMembers: async () => {
+    getAllTeamMembers: async () => {
       try {
         const teamMembers = await TeamMember.find();
 
