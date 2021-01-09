@@ -27,5 +27,6 @@ export const typeDefs = gql`
     register(registerInput: RegisterInput): User!
     login(loginInput: LoginInput): User!
     giveKudos(body: String!, forWhom: String!): Kudos!
+    deleteKudos(kudosId: ID!): String!
   }
 `;
