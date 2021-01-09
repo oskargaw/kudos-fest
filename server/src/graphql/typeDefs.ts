@@ -22,7 +22,7 @@ export const typeDefs = gql`
   }
   type Query {
     currentUser: User!
-    getAllKudos: [Kudos]
+    getAllKudoses: [Kudos]
   }
   type Mutation {
     register(registerInput: RegisterInput): User!

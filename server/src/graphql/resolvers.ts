@@ -21,10 +21,11 @@ const generateToken = (user: any) => {
 
 export const resolvers: IResolvers = {
   Query: {
-    getAllKudos: async () => {
+    getAllKudoses: async () => {
       try {
-        const allKudos = await Kudos.find();
-        return allKudos;
+        const allKudoses = await Kudos.find();
+
+        return allKudoses;
       } catch (err) {
         throw new Error(err);
       }
