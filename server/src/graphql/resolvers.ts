@@ -7,6 +7,7 @@ import { validateRegisterInput, validateLoginInput } from "../util/validators";
 import { config } from "../config";
 import { User } from "../models/User";
 import { Kudos } from "../models/Kudos";
+import { TeamMember } from "../models/TeamMember";
 
 const generateToken = (user: any) => {
   return jwt.sign(
@@ -26,6 +27,15 @@ export const resolvers: IResolvers = {
         const allKudoses = await Kudos.find();
 
         return allKudoses;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    getAllTeamMembers: async () => {
+      try {
+        const teamMembers = await TeamMember.find();
+
+        return teamMembers;
       } catch (err) {
         throw new Error(err);
       }
@@ -117,22 +127,26 @@ export const resolvers: IResolvers = {
       // TODO: uncomment when we'll set user's token in local storage on the client side
       // const user = checkAuth(context);
 
-      const user = await User.findOne({ email: "oskar.gawlak@gmail.com" });
+      try {
+        const user = await User.findOne({ email: "oskar.gawlak@gmail.com" });
 
-      if (body.trim() === "") {
-        throw new Error("Kudos body must not be empty");
+        if (body.trim() === "") {
+          throw new Error("Kudos body must not be empty");
+        }
+
+        const newKudos = new Kudos({
+          body,
+          fromWhom: user?.id,
+          forWhom,
+          createdAt: new Date().toISOString(),
+        });
+
+        const kudos = await newKudos.save();
+
+        return kudos;
+      } catch (err) {
+        throw new Error(err);
       }
-
-      const newKudos = new Kudos({
-        body,
-        fromWhom: user?.id,
-        forWhom,
-        createdAt: new Date().toISOString(),
-      });
-
-      const kudos = await newKudos.save();
-
-      return kudos;
     },
     deleteKudos: async (_, { kudosId }, context) => {
       // TODO: uncomment when we'll set user's token in local storage on the client side
@@ -155,6 +169,20 @@ export const resolvers: IResolvers = {
       // } else {
       //   throw new AuthenticationError("Action not allowed");
       // }
+    },
+    createTeamMember: async (_, { fullName, imageUrl }) => {
+      try {
+        const newTeamMember = new TeamMember({
+          fullName,
+          imageUrl,
+        });
+
+        const teamMember = await newTeamMember.save();
+
+        return teamMember;
+      } catch (err) {
+        throw new Error(err);
+      }
     },
   },
 };
