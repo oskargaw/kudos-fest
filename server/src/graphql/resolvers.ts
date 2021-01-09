@@ -136,6 +136,7 @@ export const resolvers: IResolvers = {
         // TODO: uncomment when we'll set user's token in local storage on the client side and when we add username to User
         // if (user.username === kudos.fromWhom) {
         kudos && (await kudos.delete()); // this condition is to be removed once the above gets uncommented
+
         return "Kudos deleted :(";
       } catch (err) {
         throw new Error(err);
