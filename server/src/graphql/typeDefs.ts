@@ -29,6 +29,7 @@ export const typeDefs = gql`
   }
   type Query {
     getAllTeamMembers: [TeamMember]
+    getTeamMember(teamMemberId: ID!): TeamMember!
     getAllKudoses: [Kudos]
     getKudos(kudosId: ID!): Kudos!
   }
