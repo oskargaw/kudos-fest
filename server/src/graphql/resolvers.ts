@@ -16,7 +16,7 @@ const generateToken = (user: any) => {
       email: user.email,
     },
     config.SECRET_KEY,
-    { expiresIn: "1h" }
+    { expiresIn: "168h" }
   );
 };
 

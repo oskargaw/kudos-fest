@@ -21,8 +21,8 @@ interface IAuthContext {
   logout: () => void;
 }
 
-const LOGIN = "login";
-const LOGOUT = "logout";
+const LOGIN = "LOGIN";
+const LOGOUT = "LOGOUT";
 
 let initialState = {
   user: null,
@@ -33,8 +33,8 @@ if (localStorage.getItem("jwtToken")) {
     localStorage.getItem("jwtToken") || ""
   );
 
-  //   token's expiration date - 1 hour
-  if (decodedToken.exp * 1000 < Date.now()) {
+  //   token's expiration date - 1 week
+  if (decodedToken.exp * 168000 < Date.now()) {
     localStorage.removeItem("jwtToken");
   } else {
     initialState = { ...initialState, user: decodedToken as any };
