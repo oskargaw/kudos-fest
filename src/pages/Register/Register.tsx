@@ -9,6 +9,15 @@ import {
   FETCH_ALL_TEAM_MEMBERS,
   FETCH_REGISTERED_USERS,
 } from "./graphql/register.queries";
+import {
+  StyledRegister,
+  StyledPageTitle,
+  StyledFormContainer,
+  StyledForm,
+  StyledField,
+  StyledErrorMessage,
+  StyledFieldLabel,
+} from "../shared/styles";
 
 interface ITeamMember {
   id: string;
@@ -89,49 +98,68 @@ const Register = (props: any) => {
   );
 
   return (
-    <div>
+    <StyledRegister>
       {loadingRegisterUser ? (
         "Loading"
       ) : (
         <>
-          <h1>Register</h1>
-          <Formik
-            initialValues={{
-              fullName: "",
-              email: "",
-              password: "",
-              confirmPassword: "",
-            }}
-            validationSchema={RegisterSchema}
-            onSubmit={(values) => {
-              setFormValues(values);
-              addUser();
-            }}
-          >
-            <Form>
-              <Field name="fullName" as="select">
-                <option defaultValue="default">Choose your name</option>
+          <StyledPageTitle>Register</StyledPageTitle>
+          <StyledFormContainer>
+            <Formik
+              initialValues={{
+                fullName: "",
+                email: "",
+                password: "",
+                confirmPassword: "",
+              }}
+              validationSchema={RegisterSchema}
+              onSubmit={(values) => {
+                setFormValues(values);
+                addUser();
+              }}
+            >
+              <StyledForm component={<Form />}>
+                <StyledField component={<Field name="fullName" as="select" />}>
+                  <option defaultValue="default">Choose your name</option>
 
-                {unregisteredTeamMembersFullNames.map((fullName: string) => (
-                  <option key={fullName} value={fullName}>
-                    {fullName}
-                  </option>
-                ))}
-              </Field>
-              <ErrorMessage component="div" name="fullName" />
+                  {unregisteredTeamMembersFullNames.map((fullName: string) => (
+                    <option key={fullName} value={fullName}>
+                      {fullName}
+                    </option>
+                  ))}
+                </StyledField>
+                <StyledErrorMessage
+                  component={<ErrorMessage component="div" name="fullName" />}
+                />
 
-              <Field name="email" type="email" />
-              <ErrorMessage component="div" name="email" />
+                <StyledFieldLabel>Email: </StyledFieldLabel>
+                <StyledField component={<Field name="email" type="email" />} />
+                <StyledErrorMessage
+                  component={<ErrorMessage component="div" name="email" />}
+                />
 
-              <Field name="password" type="password" />
-              <ErrorMessage component="div" name="password" />
+                <StyledFieldLabel>Password: </StyledFieldLabel>
+                <StyledField
+                  component={<Field name="password" type="password" />}
+                />
+                <StyledErrorMessage
+                  component={<ErrorMessage component="div" name="password" />}
+                />
 
-              <Field name="confirmPassword" type="password" />
-              <ErrorMessage component="div" name="confirmPassword" />
+                <StyledFieldLabel>Confirm password: </StyledFieldLabel>
+                <StyledField
+                  component={<Field name="confirmPassword" type="password" />}
+                />
+                <StyledErrorMessage
+                  component={
+                    <ErrorMessage component="div" name="confirmPassword" />
+                  }
+                />
 
-              <button type="submit">Register</button>
-            </Form>
-          </Formik>
+                <button type="submit">Register</button>
+              </StyledForm>
+            </Formik>
+          </StyledFormContainer>
         </>
       )}
       {Object.keys(backendErrors).length > 0 && (
@@ -143,7 +171,7 @@ const Register = (props: any) => {
           </ul>
         </div>
       )}
-    </div>
+    </StyledRegister>
   );
 };
 
