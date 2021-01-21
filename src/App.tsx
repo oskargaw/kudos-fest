@@ -1,7 +1,25 @@
-import "./App.css";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+
+import { AuthProvider } from "./context/authContext";
+
+import Menu from "./components/Menu";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import MyKudoses from "./pages/MyKudoses";
 
 function App() {
-  return <div className="App">Hello KudosFest!</div>;
+  return (
+    <AuthProvider>
+      <Router>
+        <Menu />
+        <Route exact path="/" component={Home} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/register" component={Register} />
+        <Route exact path="/my-kudoses" component={MyKudoses} />
+      </Router>
+    </AuthProvider>
+  );
 }
 
 export default App;
