@@ -31,15 +31,6 @@ export const resolvers: IResolvers = {
         throw new Error(err);
       }
     },
-    getAllTeamMembers: async () => {
-      try {
-        const teamMembers = await TeamMember.find();
-
-        return teamMembers;
-      } catch (err) {
-        throw new Error(err);
-      }
-    },
     getKudos: async (_, { kudosId }) => {
       try {
         const kudos = await Kudos.findById(kudosId);
@@ -49,6 +40,24 @@ export const resolvers: IResolvers = {
         } else {
           throw new Error("Kudos not found");
         }
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    getAllTeamMembers: async () => {
+      try {
+        const teamMembers = await TeamMember.find();
+
+        return teamMembers;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
+    getTeamMember: async (_, { teamMemberId }) => {
+      try {
+        const teamMember = await TeamMember.findById(teamMemberId);
+
+        return teamMember;
       } catch (err) {
         throw new Error(err);
       }
