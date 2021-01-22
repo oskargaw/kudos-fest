@@ -8,6 +8,7 @@ import { config } from "../config";
 import { User } from "../models/User";
 import { Kudos } from "../models/Kudos";
 import { TeamMember } from "../models/TeamMember";
+import { checkAuth } from "../util/check-auth";
 
 const generateToken = (user: any) => {
   return jwt.sign(
@@ -44,11 +45,17 @@ export const resolvers: IResolvers = {
         throw new Error(err);
       }
     },
-    getAllTeamMembers: async () => {
+    getAllTeamMembers: async (_parent, _args, context) => {
+      const user = checkAuth(context);
+
       try {
         const teamMembers = await TeamMember.find();
 
-        return teamMembers;
+        if (user) {
+          return teamMembers;
+        } else {
+          throw new AuthenticationError("Action not allowed");
+        }
       } catch (err) {
         throw new Error(err);
       }
