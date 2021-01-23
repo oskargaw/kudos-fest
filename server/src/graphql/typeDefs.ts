@@ -16,6 +16,12 @@ export const typeDefs = gql`
   type User {
     id: ID!
     token: String!
+    fullName: String!
+  }
+  type RegisteredUser {
+    id: ID!
+    fullName: String!
+    email: String!
   }
   input RegisterInput {
     fullName: String!
@@ -30,6 +36,7 @@ export const typeDefs = gql`
   type Query {
     getAllTeamMembers: [TeamMember]
     getTeamMember(teamMemberId: ID!): TeamMember!
+    getRegisteredUsers: [RegisteredUser]
     getAllKudoses: [Kudos]
     getKudos(kudosId: ID!): Kudos!
   }
