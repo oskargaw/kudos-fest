@@ -10,6 +10,11 @@ interface LoginInputValidationProps {
   password: string;
 }
 
+interface GiveKudosValidationProps {
+  forWhom: string;
+  body: string;
+}
+
 export const validateRegisterInput = ({
   fullName,
   email,
@@ -18,10 +23,10 @@ export const validateRegisterInput = ({
 }: RegisterInputValidationProps) => {
   let errors = {};
 
-  // "choose your name" will be a default value in the dropdown
+  // "Choose your name" will be a default value in the dropdown
   const chooseFullNameMessage = "Choose your name";
 
-  if (fullName === chooseFullNameMessage) {
+  if (fullName === chooseFullNameMessage || fullName === "") {
     errors = { ...errors, fullName: "You need to choose your name" };
   }
 
@@ -66,6 +71,35 @@ export const validateLoginInput = ({
   }
   if (password === "") {
     errors = { ...errors, password: "Password must not be empty" };
+  }
+
+  return {
+    errors,
+    valid: Object.keys(errors).length < 1,
+  };
+};
+
+export const validateGiveKudosInput = ({
+  forWhom,
+  body,
+}: GiveKudosValidationProps) => {
+  let errors = {};
+
+  // "Choose a person" will be a default value in the dropdown
+  const choosePersonMessage = "Choose a person";
+
+  if (forWhom === choosePersonMessage || forWhom === "") {
+    errors = {
+      ...errors,
+      forWhom: "Please choose a person you want to give kudos to",
+    };
+  }
+
+  if (body === "") {
+    errors = {
+      ...errors,
+      body: "Please provide the kudos message",
+    };
   }
 
   return {
