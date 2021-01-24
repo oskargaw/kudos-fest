@@ -62,6 +62,15 @@ export const resolvers: IResolvers = {
         throw new Error(err);
       }
     },
+    getRegisteredUsers: async () => {
+      try {
+        const registeredUsers = await User.find();
+
+        return registeredUsers;
+      } catch (err) {
+        throw new Error(err);
+      }
+    },
   },
   Mutation: {
     login: async (_, { loginInput: { email, password } }) => {
