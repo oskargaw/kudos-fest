@@ -1,75 +1,89 @@
-import { ReactNode, useContext, useState } from "react";
-import { useMutation } from "@apollo/client";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { AuthContext } from "../../context/authContext";
-import { LOGIN_USER } from './graphql/login.mutations';
-import { History } from 'history';
+import { ReactNode, useContext, useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { RouteComponentProps } from 'react-router-dom';
 
-interface Props {
-  history: History
-};
+import { AuthContext } from '../../context/authContext';
+import { LOGIN_USER } from './graphql/login.mutations';
+import {
+  StyledContainer,
+  StyledPageTitle,
+  StyledFormContainer,
+  StyledForm,
+  StyledField,
+  StyledErrorMessage,
+  StyledFieldLabel,
+} from '../shared/styles';
 
 const LoginSchema = Yup.object().shape({
-  email: Yup.string().email().required("Please provide your email"),
-  password: Yup.string().required("Please provide a password"),
-})
+  email: Yup.string().email().required('Please provide your email'),
+  password: Yup.string().required('Please provide a password'),
+});
 
-const Login = (props: Props) => {
+const Login = (props: RouteComponentProps) => {
   const [backendErrors, setBackendErrors] = useState({});
   const [formValues, setFormValues] = useState({
-    email: "",
-    password: ""
-  })
+    email: '',
+    password: '',
+  });
   const context = useContext(AuthContext);
-  const [loginUser, {loading: loadingLoginUser}] = useMutation(
-    LOGIN_USER,
-    {
-      update(_, {data: {login: userData}}) {
-        context.login(userData);
-        props.history.push("/")
-      },
-      onError(err) {
-        console.log(err);
 
-        if (err.graphQLErrors[0].extensions) {
-          const errors = err.graphQLErrors[0].extensions.exception.errors
-          console.log(errors);
-          setBackendErrors(errors);
-        }
-      },
-      variables: formValues,
-    }
-  )
+  const [loginUser, { loading: loadingLoginUser }] = useMutation(LOGIN_USER, {
+    update(_, { data: { login: userData } }) {
+      context.login(userData);
+      props.history.push('/');
+    },
+    onError(err) {
+      console.log(err);
 
+      if (err.graphQLErrors[0].extensions) {
+        const errors = err.graphQLErrors[0].extensions.exception.errors;
+        console.log(errors);
+        setBackendErrors(errors);
+      }
+    },
+    variables: formValues,
+  });
+
+  //TODO: styles to be changed later
   return (
-    <div>
-      {loadingLoginUser ? 'Loading' : (
-        <>
-          <h1>Sign in</h1>
-          <Formik 
+    <StyledContainer>
+      <>
+        <StyledPageTitle>Login</StyledPageTitle>
+        <StyledFormContainer>
+          <Formik
             initialValues={{
               email: '',
-              password: ''
+              password: '',
             }}
             validationSchema={LoginSchema}
-            onSubmit={(values)=>{
+            onSubmit={(values) => {
               setFormValues(values);
-              loginUser()
+              loginUser();
             }}
           >
-            <Form>
-              <Field name="email" type="email" />
-              <ErrorMessage component="div" name="email" />
+            <StyledForm component={<Form />}>
+              <StyledFieldLabel>Email: </StyledFieldLabel>
+              <StyledField component={<Field name="email" type="email" />} />
+              <StyledErrorMessage
+                component={<ErrorMessage component="div" name="email" />}
+              />
 
-              <Field name="password" type="password" />
-              <ErrorMessage component="div" name="password" />
+              <StyledFieldLabel>Password: </StyledFieldLabel>
+              <StyledField
+                component={<Field name="password" type="password" />}
+              />
+              <StyledErrorMessage
+                component={<ErrorMessage component="div" name="password" />}
+              />
 
-              <button type="submit">Sign up</button>
-            </Form>
+              <button type="submit">Login</button>
+            </StyledForm>
           </Formik>
-        </>
-      )}
+        </StyledFormContainer>
+      </>
+      {loadingLoginUser && <div>Loading</div>}
       {Object.keys(backendErrors).length > 0 && (
         <div>
           <ul>
@@ -79,7 +93,7 @@ const Login = (props: Props) => {
           </ul>
         </div>
       )}
-    </div>
+    </StyledContainer>
   );
 };
 
