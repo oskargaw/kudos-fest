@@ -1,7 +1,7 @@
 import * as React from "react";
 import styled from "styled-components";
 
-export const StyledRegister = styled.div`
+export const StyledContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;

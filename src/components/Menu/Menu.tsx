@@ -4,6 +4,7 @@ const Menu = () => {
   return (
     <div>
       <Link to="/">Home </Link>
+      <Link to="/give-kudos">GiveKudos </Link>
       <Link to="/my-kudoses">MyKudoses </Link>
       <Link to="/login">Login </Link>
       <Link to="/register">Register </Link>

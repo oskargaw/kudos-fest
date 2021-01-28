@@ -43,7 +43,7 @@ export const typeDefs = gql`
   type Mutation {
     register(registerInput: RegisterInput): User!
     login(loginInput: LoginInput): User!
-    giveKudos(body: String!, forWhom: String!): Kudos!
+    giveKudos(forWhom: String!, body: String!): Kudos!
     deleteKudos(kudosId: ID!): String!
     createTeamMember(fullName: String!, imageUrl: String!): TeamMember!
   }

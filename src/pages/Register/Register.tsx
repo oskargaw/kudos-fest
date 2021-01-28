@@ -10,7 +10,7 @@ import {
   FETCH_REGISTERED_USERS,
 } from "./graphql/register.queries";
 import {
-  StyledRegister,
+  StyledContainer,
   StyledPageTitle,
   StyledFormContainer,
   StyledForm,
@@ -98,7 +98,7 @@ const Register = (props: any) => {
   );
 
   return (
-    <StyledRegister>
+    <StyledContainer>
       {loadingRegisterUser ? (
         "Loading"
       ) : (
@@ -171,7 +171,7 @@ const Register = (props: any) => {
           </ul>
         </div>
       )}
-    </StyledRegister>
+    </StyledContainer>
   );
 };
 

@@ -3,7 +3,11 @@ import { IResolvers } from "graphql-tools";
 import * as bcrypt from "bcryptjs";
 import * as jwt from "jsonwebtoken";
 
-import { validateRegisterInput, validateLoginInput } from "../util/validators";
+import {
+  validateRegisterInput,
+  validateLoginInput,
+  validateGiveKudosInput,
+} from "../util/validators";
 import { config } from "../config";
 import { User } from "../models/User";
 import { Kudos } from "../models/Kudos";
@@ -45,17 +49,11 @@ export const resolvers: IResolvers = {
         throw new Error(err);
       }
     },
-    getAllTeamMembers: async (_parent, _args, context) => {
-      const user = checkAuth(context);
-
+    getAllTeamMembers: async (_parent, _args) => {
       try {
         const teamMembers = await TeamMember.find();
 
-        if (user) {
-          return teamMembers;
-        } else {
-          throw new AuthenticationError("Action not allowed");
-        }
+        return teamMembers;
       } catch (err) {
         throw new Error(err);
       }
@@ -163,20 +161,22 @@ export const resolvers: IResolvers = {
       };
     },
     giveKudos: async (_, { body, forWhom }, context) => {
-      // get logged user id
-      // TODO: uncomment when we'll set user's token in local storage on the client side
-      // const user = checkAuth(context);
+      const user = checkAuth(context);
+
+      const { errors, valid } = validateGiveKudosInput({ forWhom, body });
+
+      if (!valid) {
+        throw new UserInputError("Errors", { errors });
+      }
 
       try {
-        const user = await User.findOne({ email: "oskar.gawlak@gmail.com" });
-
         if (body.trim() === "") {
           throw new Error("Kudos body must not be empty");
         }
 
         const newKudos = new Kudos({
           body,
-          fromWhom: user?.id,
+          fromWhom: (user as any).id,
           forWhom,
           createdAt: new Date().toISOString(),
         });
