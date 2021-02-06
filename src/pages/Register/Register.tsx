@@ -2,6 +2,7 @@ import { ReactNode, useContext, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import { RouteComponentProps } from "react-router-dom";
 
 import { AuthContext } from "../../context/authContext";
 import { REGISTER_USER } from "./graphql/register.mutations";
@@ -43,7 +44,7 @@ const RegisterSchema = Yup.object().shape({
     .required("Please confirm your password"),
 });
 
-const Register = (props: any) => {
+const Register = (props: RouteComponentProps) => {
   const [backendErrors, setBackendErrors] = useState({});
   const [formValues, setFormValues] = useState({
     fullName: "",
