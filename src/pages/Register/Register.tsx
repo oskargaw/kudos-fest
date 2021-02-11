@@ -1,7 +1,8 @@
 import { ReactNode, useContext, useState } from "react";
 import { useMutation, useQuery } from "@apollo/client";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useFormik, FormikProvider } from "formik";
 import * as Yup from "yup";
+import { Mail, Lock } from "react-feather";
 
 import { AuthContext } from "../../context/authContext";
 import { REGISTER_USER } from "./graphql/register.mutations";
@@ -9,14 +10,20 @@ import {
   FETCH_ALL_TEAM_MEMBERS,
   FETCH_REGISTERED_USERS,
 } from "./graphql/register.queries";
+
+import LoginAndRegisterPageTemplate from "../templates/LoginAndRegisterPageTemplate";
+import Dropdown from "../../components/Form/Dropdown";
+import TextInput from "../../components/Form/TextInput";
+
 import {
   StyledContainer,
-  StyledPageTitle,
+  StyledTitle,
   StyledFormContainer,
   StyledForm,
-  StyledField,
-  StyledErrorMessage,
-  StyledFieldLabel,
+  StyledButton,
+  StyledFormFooter,
+  StyledFormFooterDescription,
+  StyledFormFooterLink,
 } from "../shared/styles";
 
 interface ITeamMember {
@@ -97,70 +104,94 @@ const Register = (props: any) => {
       !registeredTeamMembersFullNames.includes(teamMemberFullName)
   );
 
+  const formik = useFormik({
+    validationSchema: RegisterSchema,
+    initialValues: {
+      fullName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    },
+    onSubmit: (values) => {
+      setFormValues(values);
+      addUser();
+    },
+  });
+
+  const { handleChange, handleBlur, errors, touched, values } = formik;
+
   return (
     <StyledContainer>
       {loadingRegisterUser ? (
         "Loading"
       ) : (
-        <>
-          <StyledPageTitle>Register</StyledPageTitle>
+        <LoginAndRegisterPageTemplate>
+          <StyledTitle>Sign Up</StyledTitle>
           <StyledFormContainer>
-            <Formik
-              initialValues={{
-                fullName: "",
-                email: "",
-                password: "",
-                confirmPassword: "",
-              }}
-              validationSchema={RegisterSchema}
-              onSubmit={(values) => {
-                setFormValues(values);
-                addUser();
-              }}
-            >
-              <StyledForm component={<Form />}>
-                <StyledField component={<Field name="fullName" as="select" />}>
-                  <option defaultValue="default">Choose your name</option>
-
-                  {unregisteredTeamMembersFullNames.map((fullName: string) => (
-                    <option key={fullName} value={fullName}>
-                      {fullName}
-                    </option>
-                  ))}
-                </StyledField>
-                <StyledErrorMessage
-                  component={<ErrorMessage component="div" name="fullName" />}
+            <FormikProvider value={formik}>
+              <StyledForm>
+                <Dropdown
+                  name="fullName"
+                  placeholder="Choose your name"
+                  options={unregisteredTeamMembersFullNames}
+                  onChange={handleChange("fullName")}
+                  value={values.fullName}
+                  onBlur={handleBlur("fullName")}
+                  error={errors.fullName}
+                  touched={touched.fullName}
                 />
 
-                <StyledFieldLabel>Email: </StyledFieldLabel>
-                <StyledField component={<Field name="email" type="email" />} />
-                <StyledErrorMessage
-                  component={<ErrorMessage component="div" name="email" />}
+                <TextInput
+                  name="mail"
+                  type="text"
+                  icon={<Mail />}
+                  placeholder="Email"
+                  onChange={handleChange("email")}
+                  value={values.email}
+                  onBlur={handleBlur("email")}
+                  required={true}
+                  error={errors.email}
+                  touched={touched.email}
                 />
 
-                <StyledFieldLabel>Password: </StyledFieldLabel>
-                <StyledField
-                  component={<Field name="password" type="password" />}
-                />
-                <StyledErrorMessage
-                  component={<ErrorMessage component="div" name="password" />}
-                />
-
-                <StyledFieldLabel>Confirm password: </StyledFieldLabel>
-                <StyledField
-                  component={<Field name="confirmPassword" type="password" />}
-                />
-                <StyledErrorMessage
-                  component={
-                    <ErrorMessage component="div" name="confirmPassword" />
-                  }
+                <TextInput
+                  name="password"
+                  type="password"
+                  icon={<Lock />}
+                  placeholder="Password"
+                  onChange={handleChange("password")}
+                  value={values.password}
+                  onBlur={handleBlur("password")}
+                  required={true}
+                  error={errors.password}
+                  touched={touched.password}
                 />
 
-                <button type="submit">Register</button>
+                <TextInput
+                  name="confirmPassword"
+                  type="password"
+                  icon={<Lock />}
+                  placeholder="Comfirm password"
+                  onChange={handleChange("confirmPassword")}
+                  value={values.confirmPassword}
+                  onBlur={handleBlur("confirmPassword")}
+                  required={true}
+                  error={errors.confirmPassword}
+                  touched={touched.confirmPassword}
+                />
+
+                <StyledButton type="submit">Sign Up</StyledButton>
               </StyledForm>
-            </Formik>
+            </FormikProvider>
+
+            <StyledFormFooter>
+              <StyledFormFooterDescription>
+                Already have an account?
+              </StyledFormFooterDescription>
+              <StyledFormFooterLink to="/login">Login</StyledFormFooterLink>
+            </StyledFormFooter>
           </StyledFormContainer>
-        </>
+        </LoginAndRegisterPageTemplate>
       )}
       {Object.keys(backendErrors).length > 0 && (
         <div>

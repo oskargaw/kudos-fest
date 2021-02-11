@@ -1,5 +1,5 @@
 import { ReactNode, useContext, useState } from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { useFormik, FormikProvider } from "formik";
 import * as Yup from "yup";
 import { useMutation, useQuery } from "@apollo/client";
 
@@ -9,13 +9,12 @@ import { FETCH_ALL_TEAM_MEMBERS } from "../../pages/GiveKudos/graphql/giveKudos.
 
 import {
   StyledContainer,
-  StyledPageTitle,
+  StyledTitle,
   StyledFormContainer,
   StyledForm,
-  StyledFieldLabel,
-  StyledField,
-  StyledErrorMessage,
 } from "../../pages/shared/styles";
+import Dropdown from "../../components/Form/Dropdown";
+import TextInput from "../../components/Form/TextInput";
 
 interface ITeamMember {
   id: string;
@@ -24,7 +23,8 @@ interface ITeamMember {
 }
 
 const GiveKudosSchema = Yup.object().shape({
-  body: Yup.string().required(
+  forWhom: Yup.string().required("You need to choose a lucky person"),
+  kudosMessage: Yup.string().required(
     "Don't be shy, tell that person what you're grateful for!"
   ),
 });
@@ -33,7 +33,7 @@ const GiveKudosCard = () => {
   const [backendErrors, setBackendErrors] = useState({});
   const [formValues, setFormValues] = useState({
     forWhom: "",
-    body: "",
+    kudosMessage: "",
   });
 
   const { user } = useContext(AuthContext);
@@ -59,9 +59,23 @@ const GiveKudosCard = () => {
     ? []
     : teamMembers.map((teamMember: ITeamMember) => teamMember.fullName);
 
+  const formik = useFormik({
+    validationSchema: GiveKudosSchema,
+    initialValues: {
+      forWhom: "",
+      kudosMessage: "",
+    },
+    onSubmit: (values) => {
+      setFormValues(values);
+      giveKudos();
+    },
+  });
+
+  const { handleChange, handleBlur, errors, touched, values } = formik;
+
   return (
     <div>
-      <StyledPageTitle>Give kudos</StyledPageTitle>
+      <StyledTitle>Give kudos</StyledTitle>
       {user ? (
         <StyledContainer>
           {loading ? (
@@ -69,45 +83,34 @@ const GiveKudosCard = () => {
           ) : (
             <>
               <StyledFormContainer>
-                <Formik
-                  initialValues={{
-                    forWhom: "",
-                    body: "",
-                  }}
-                  validationSchema={GiveKudosSchema}
-                  onSubmit={(values) => {
-                    setFormValues(values);
-                    giveKudos();
-                  }}
-                >
-                  <StyledForm component={<Form />}>
-                    <StyledFieldLabel>Kudos to: </StyledFieldLabel>
-                    <StyledField
-                      component={<Field name="forWhom" as="select" />}
-                    >
-                      <option defaultValue="default">Choose a person</option>
-                      {teamMembersFullNames.map((fullName: string) => (
-                        <option key={fullName} value={fullName}>
-                          {fullName}
-                        </option>
-                      ))}
-                    </StyledField>
-                    <StyledErrorMessage
-                      component={
-                        <ErrorMessage component="div" name="forWhom" />
-                      }
+                <FormikProvider value={formik}>
+                  <StyledForm>
+                    <Dropdown
+                      name="forWhom"
+                      placeholder="Choose a lucky person"
+                      options={teamMembersFullNames}
+                      onChange={handleChange("forWhom")}
+                      value={values.forWhom}
+                      onBlur={handleBlur("forWhom")}
+                      error={errors.forWhom}
+                      touched={touched.forWhom}
                     />
-                    <StyledFieldLabel>Kudos message: </StyledFieldLabel>
-                    <StyledField
-                      component={<Field name="body" type="text" />}
-                    />
-                    <StyledErrorMessage
-                      component={<ErrorMessage component="div" name="body" />}
+
+                    <TextInput
+                      name="kudosMessage"
+                      type="text"
+                      placeholder="Kudos message"
+                      onChange={handleChange("kudosMessage")}
+                      value={values.kudosMessage}
+                      onBlur={handleBlur("kudosMessage")}
+                      required={true}
+                      error={errors.kudosMessage}
+                      touched={touched.kudosMessage}
                     />
 
                     <button type="submit">Give kudos</button>
                   </StyledForm>
-                </Formik>
+                </FormikProvider>
               </StyledFormContainer>
             </>
           )}
