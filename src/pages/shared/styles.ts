@@ -2,9 +2,11 @@ import * as React from "react";
 import styled from "styled-components";
 
 export const StyledContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  width: 100vw;
+  height: 100vh;
+  background-color: #091a22;
+  position: relative;
+  overflow: hidden;
 `;
 
 export const StyledPageTitle = styled.h1`
